@@ -8,27 +8,27 @@ const commands = [];
 module.exports = async (client) => {
 
     // commands/file.js
-    // const commandFiles = fs.readdirSync(`./commands/`).filter(file => file.endsWith('.js'));
+    const commandFiles = fs.readdirSync(`./commands/`).filter(file => file.endsWith('.js'));
 
-    // for (const file of commandFiles) {
-    //     const command = require(`../commands/${file}`);
-    //     client.commands.set(command.data.name, command);
-    //     commands.push(command.data.toJSON());
-    //     console.log(chalk.blue(`[COMMAND]`) + chalk.whiteBright(` ${command.data.name} has loaded`));
-    // }
+    for (const file of commandFiles) {
+        const command = require(`../commands/${file}`);
+        client.commands.set(command.data.name, command);
+        commands.push(command.data.toJSON());
+        console.log(chalk.blue(`[COMMAND]`) + chalk.whiteBright(` ${command.data.name} has loaded`));
+    }
 
     // commands/category/file.js
 
-    fs.readdirSync('./commands').forEach(dir => {
-        const commandFiles = fs.readdirSync(`./commands/${dir}`).filter(file => file.endsWith('.js'));
+    // fs.readdirSync('./commands').forEach(dir => {
+    //     const commandFiles = fs.readdirSync(`./commands/${dir}`).filter(file => file.endsWith('.js'));
 
-        for (const file of commandFiles) {
-            const command = require(`../commands/${dir}/${file}`);
-            client.commands.set(command.data.name, command);
-            commands.push(command.data.toJSON());
-            console.log(chalk.blue(`[Command]`) + chalk.whiteBright(` ${command.data.name} has loaded`));
-        }
-    });
+    //     for (const file of commandFiles) {
+    //         const command = require(`../commands/${dir}/${file}`);
+    //         client.commands.set(command.data.name, command);
+    //         commands.push(command.data.toJSON());
+    //         console.log(chalk.blue(`[Command]`) + chalk.whiteBright(` ${command.data.name} has loaded`));
+    //     }
+    // });
 
     console.log(chalk.green("[INFO]") + " Commands have loaded.");
 }
