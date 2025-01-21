@@ -15,12 +15,12 @@ module.exports = {
             if (!command) return;
 
             try {
-                await command.autocomplete(interaction, client, db);
+                await command.autocomplete(interaction, client);
             } catch (error) {
                 console.log(error);
             }
         }
-
+        
         if (!interaction.isCommand()) return;
 
         const commandName = interaction.commandName
@@ -29,6 +29,8 @@ module.exports = {
         if (!command) return
 
         try {
+            if (command.data.category == 'Developer' && !client.config.devId.includes(interaction.user.id)) return interaction.reply({ content: '❌ You aren\'t allowed to use this command', flags: Discord.MessageFlags.Ephemeral });
+
             await command.run(interaction, client, db);
         } catch (error) {
             interaction.reply("Something went wrong\n" + error.message);

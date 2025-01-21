@@ -1,52 +1,60 @@
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const Discord = require('discord.js');
 const fs = require('fs');
-const chalk = require('chalk').default;
 
 const commands = [];
 
 module.exports = async (client) => {
+    fs.readdirSync('./commands/').forEach(dir => {
+      const commandFiles = fs.readdirSync(`./commands/${dir}/`).filter(file => file.endsWith('.js'));
 
-    // commands/file.js
-    const commandFiles = fs.readdirSync(`./commands/`).filter(file => file.endsWith('.js'));
+      for (const commandFile of commandFiles) {
+        const file = require(`../commands/${dir}/${commandFile}`);
 
-    for (const file of commandFiles) {
-        const command = require(`../commands/${file}`);
-        client.commands.set(command.data.name, command);
-        commands.push(command.data.toJSON());
-        console.log(chalk.blue(`[COMMAND]`) + chalk.whiteBright(` ${command.data.name} has loaded`));
-    }
+        file.data = {
+          name: file.command.name,
+          description: file.command.description,
+          category: dir
+        };
 
-    // commands/category/file.js
+        file.command.contexts = [0, 1, 2];
+        file.command.integration_types = [0, 1];
 
-    // fs.readdirSync('./commands').forEach(dir => {
-    //     const commandFiles = fs.readdirSync(`./commands/${dir}`).filter(file => file.endsWith('.js'));
+        if (file.data.category == 'Developer') file.data.restricted = true;
 
-    //     for (const file of commandFiles) {
-    //         const command = require(`../commands/${dir}/${file}`);
-    //         client.commands.set(command.data.name, command);
-    //         commands.push(command.data.toJSON());
-    //         console.log(chalk.blue(`[Command]`) + chalk.whiteBright(` ${command.data.name} has loaded`));
-    //     }
-    // });
+        let usage = `/${file.command.name}`;
 
-    console.log(chalk.green("[INFO]") + " Commands have loaded.");
+        if (file.command?.options && file.command.options.length > 0) {
+          file.command.options.forEach(option => {
+            usage += ` ${option.required ? '<' : '['}${option.name}${option.required ? '>' : ']'}`;
+          });
+        };
+
+        file.data.usage = usage;
+
+        client.commands.set(file.command.name, file);
+        commands.push(file.command.toJSON());
+
+        console.log(`[COMMAND] ${file.command.name} has loaded.`);
+      }
+    });
+
+    console.log("[INFO] Commands have loaded.");
 }
 
 module.exports.load = async (client, guildId) => {
     const clientId = client.user?.id;
   
-    const rest = new REST({
+    const rest = new Discord.REST({
       version: '9'
     }).setToken(client.config.token);
   
     try {
       await rest.put(
-        Routes.applicationGuildCommands(clientId, guildId), {
-          body: commands
-        },
+        Discord.Routes.applicationCommands(clientId, guildId), {
+          body: commands,
+        }
       ); 
-      console.log(chalk.blue("[SLASH-COMMANDS]") + ` registered ${commands.length} commands in ${client.guilds.cache.get(guildId).name} (${guildId})`);
+      console.log(`[SLASH-COMMANDS] registered ${commands.length} commands in ${client.guilds.cache.get(guildId).name} (${guildId})`);
     } catch (error) {
       console.error(error);
     }

@@ -7,9 +7,9 @@ const Discord = require('discord.js');
  */
 
 module.exports.run = async (interaction, client) => {
-    
+    interaction.reply('Pong');
 }
 
 module.exports.command = new Discord.SlashCommandBuilder()
-    .setName('')
-    .setDescription('')
+    .setName('ping')
+    .setDescription('A test command')

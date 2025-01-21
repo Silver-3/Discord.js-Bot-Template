@@ -1,6 +1,6 @@
 # Discord.js Bot Template
 
-A template for a discord.js bot. This is for personal use but can you install with steps below:
+A template for a discord.js bot. This is a template I use but can you install with steps below:
 
 Open command prompt and copy:
 ```
