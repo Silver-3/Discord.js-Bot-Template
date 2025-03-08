@@ -6,7 +6,7 @@ module.exports = {
     once: false,
     /**
      * @param {Discord.Client} client 
-     * @param {Discord.CommandInteraction} interaction 
+     * @param {Discord.Interaction} interaction 
      * @param {QuickDB} db
      */
     run: async (interaction, client, db) => {

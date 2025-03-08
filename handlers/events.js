@@ -1,5 +1,11 @@
+const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+
+/**
+ * 
+ * @param {Discord.Client} client 
+ */
 
 module.exports = (client) => {
     const eventsFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));

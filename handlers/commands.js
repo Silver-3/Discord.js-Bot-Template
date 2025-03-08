@@ -3,6 +3,11 @@ const fs = require('fs');
 
 const commands = [];
 
+/**
+ * 
+ * @param {Discord.Client} client 
+ */
+
 module.exports = async (client) => {
     fs.readdirSync('./commands/').forEach(dir => {
       const commandFiles = fs.readdirSync(`./commands/${dir}/`).filter(file => file.endsWith('.js'));
@@ -16,8 +21,8 @@ module.exports = async (client) => {
           category: dir
         };
 
-        file.command.contexts = [0, 1, 2];
-        file.command.integration_types = [0, 1];
+        file.command.contexts = [0, 1, 2]; // 0=guild, 1=dms, 2=both
+        file.command.integration_types = [0, 1]; //0=global (dms), 1=guild only
 
         if (file.data.category == 'Developer') file.data.restricted = true;
 
